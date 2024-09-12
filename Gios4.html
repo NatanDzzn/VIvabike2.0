@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Portal Wheeling - Bicicleta</title>
+    <link rel="shortcut icon" href="imgs/logo12.jpg" type="image/x-icon" />
+    <link href="css.css" rel="stylesheet"/>
+    <style>
+        /* Estilos para o botão de adicionar ao carrinho */
+        .adicionar-carrinho {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .adicionar-carrinho:hover {
+            background-color: #218838;
+        }
+
+        /* Estilos para o painel do carrinho */
+        #carrinho-panel {
+            height: 100%;
+            width: 0;
+            position: fixed;
+            top: 0;
+            right: 0;
+            background-color: #f1f1f1;
+            overflow-x: hidden;
+            transition: 0.5s;
+            padding-top: 60px;
+            box-shadow: -5px 0 5px rgba(0,0,0,0.2);
+        }
+
+        #carrinho-panel a {
+            padding: 8px 32px;
+            text-decoration: none;
+            font-size: 25px;
+            color: #000;
+            display: block;
+            transition: 0.3s;
+        }
+
+        #carrinho-panel a:hover {
+            color: #f1f1f1;
+        }
+
+        #carrinho-panel .closebtn {
+            position: absolute;
+            top: 0;
+            right: 25px;
+            font-size: 36px;
+            margin-left: 50px;
+        }
+
+        #carrinho-panel .content {
+            margin-top: 20px;
+        }
+
+        /* Estilos para o conteúdo do carrinho */
+        .item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .item img {
+            height: 100px;
+            width: auto;
+            margin-right: 20px;
+        }
+
+        /* Estilos para o campo de quantidade */
+        .quantity-input {
+            width: 50px;
+            margin-left: 10px;
+            padding: 5px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<button onclick="location.href='index.html'" class="buy-button">pagina inicial</button>
+<body>
+
+    <div class="product-title">
+        QUADRO GIOS DJ,ROSA COM ADESIVOS PRETO
+    </div>
+    <div class="product-code">
+        Cod. do Produto: 2765
+    </div>
+    <div class="product-image">
+        <img alt="QUADRO,GIOS DJ ROSA COM ADESIVO PRETO" height="400" src="imgs/gios dj.jpg" width="600"/>
+        
+     
+    </div>
+    <div class="product-details">
+        <div>
+            <div class="price">R$ 949,90</div>
+            <div class="installments">8x de R$ 118,73 sem juros no cartão de crédito</div>
+            <div class="discount-price">R$ 902,45 </div>
+            <div class="discount">à vista no pix (5% Desconto) Economize R$ 130,00</div>
+            
+           
+            
+            <button class="adicionar-carrinho" onclick="adicionarAoCarrinho()">Adicionar ao Carrinho</button>
+            
+            <button class="buy-button">COMPRAR AGORA</button>
+            <div class="secure">
+                <img alt="Loja 100% Segura" height="20" src="imgs/logo12.jpg" width="20"/>
+                <span>LOJA 100% SEGURA</span>
+            </div>
+            <div class="shipping">
+                <img alt="Frete Grátis" height="20" src="imgs/logo12.jpg" width="20"/>
+                <span>Frete Grátis</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="shipping-calculator">
+        <label>Calcule Frete e Prazo</label>
+        <input placeholder="Digite seu CEP" type="text"/>
+        <button><i class="fas fa-search"></i></button>
+    </div>
+
+    <!-- Painel do Carrinho -->
+    <div id="carrinho-panel">
+        <a href="javascript:void(0)" class="closebtn" onclick="fecharCarrinho()">&times;</a>
+        <div class="content" id="carrinho-content">
+            <!-- O conteúdo do carrinho será inserido aqui pelo JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        // Array para armazenar os itens do carrinho
+        let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+        let descontoCupom = 0;
+
+        // Função para adicionar ao carrinho
+        function adicionarAoCarrinho() {
+            const produto = {
+                nome: 'GIOS DJ',
+                preco: 949.90,
+                quantidade: 1,
+                imagem: 'imgs/gios dj.jpg' // Usar a mesma imagem da página
+            };
+            
+            // Verificar se o item já está no carrinho
+            const itemExistente = carrinho.find(item => item.nome === produto.nome);
+            if (itemExistente) {
+                itemExistente.quantidade += 1;
+            } else {
+                carrinho.push(produto);
+            }
+            
+            localStorage.setItem('carrinho', JSON.stringify(carrinho));
+            mostrarCarrinho();
+        }
+
+        // Função para mostrar o carrinho
+        function mostrarCarrinho() {
+            const carrinhoPanel = document.getElementById('carrinho-panel');
+            const carrinhoContent = document.getElementById('carrinho-content');
+            carrinhoContent.innerHTML = ''; // Limpa o conteúdo atual
+
+            let total = 0;
+
+            carrinho.forEach((item, index) => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'item';
+
+                const itemImage = document.createElement('img');
+                itemImage.src = item.imagem;
+                itemImage.alt = item.nome;
+                
+                const itemDetails = document.createElement('div');
+                itemDetails.innerHTML = `
+                    Produto: ${item.nome} <br> 
+                    Preço Unitário: R$ ${item.preco.toFixed(2)} <br>
+                    Quantidade: <input type="number" value="${item.quantidade}" class="quantity-input" onchange="atualizarQuantidade(${index}, this.value)">
+                `;
+                
+                itemDiv.appendChild(itemImage);
+                itemDiv.appendChild(itemDetails);
+                carrinhoContent.appendChild(itemDiv);
+
+                total += item.preco * item.quantidade;
+            });
+
+            // Aplicar desconto do cupom, se houver
+            total -= descontoCupom;
+
+            const totalDiv = document.createElement('div');
+            totalDiv.innerHTML = `<h2>Total: R$ ${total.toFixed(2)}</h2>`;
+            carrinhoContent.appendChild(totalDiv);
+
+            const cupomDiv = document.createElement('div');
+            cupomDiv.innerHTML = `
+               <h3>Cupom de Desconto</h3>
+            <input type="text" id="cupomInput" placeholder="Digite seu cupom">
+            <button onclick="aplicarCupom()">Aplicar Cupom</button>
+            `;
+            carrinhoContent.appendChild(cupomDiv);
+
+            carrinhoPanel.style.width = '300px'; // Exibe o painel
+        }
+
+        // Função para fechar o painel do carrinho
+        function fecharCarrinho() {
+            document.getElementById('carrinho-panel').style.width = '0';
+        }
+
+        // Função para aplicar cupom e atualizar o total
+        function aplicarCupom() {
+            const cupomInput = document.getElementById('cupomInput') || document.getElementById('cupomInputPanel');
+            const cupom = cupomInput.value.trim();
+
+            // Exemplo de lógica para aplicar desconto
+            if (cupom === 'DESCONTO10') {
+                descontoCupom = 100; // Desconto fixo de R$ 100
+                alert('Cupom de R$ 100 aplicado!');
+            } else {
+                descontoCupom = 0;
+                alert('Cupom inválido!');
+            }
+
+            localStorage.setItem('descontoCupom', descontoCupom);
+            mostrarCarrinho(); // Atualiza o carrinho exibido
+        }
+
+        // Função para atualizar a quantidade do item
+        function atualizarQuantidade(index, quantidade) {
+            if (quantidade <= 0) {
+                carrinho.splice(index, 1); // Remove o item se a quantidade for 0 ou menor
+            } else {
+                carrinho[index].quantidade = parseInt(quantidade);
+            }
+            localStorage.setItem('carrinho', JSON.stringify(carrinho));
+            mostrarCarrinho(); // Atualiza o carrinho exibido
+        }
+    </script>
+</body>
+</html>

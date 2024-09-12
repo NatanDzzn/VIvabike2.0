@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loja de Bicicletas</title>
+    <link rel="shortcut icon" href="imgs/logo12.jpg" type="image/x-icon" />
+    <link rel="stylesheet" href="styles.css">
+    
+</head>
+
+<body>
+    <header>
+        <h1>VivaBike</h1>
+        <nav>
+            <ul>
+                <li><a href="#inicio">Início</a></li>
+                <li><a href="#sobre-nos">Sobre Nós</a></li>
+            </ul>
+        </nav>
+        <div class="cart-icon" onclick="mostrarCarrinho()">
+            🛒 <span id="cart-count">0</span>
+        </div>
+    </header>
+    
+    <main>
+        
+        <div class="slider">
+  
+
+            <div class="list">
+    
+                <div class="item">
+                    <img src="./imgs/bike.jpg" alt="bike">
+    
+                    <div class="content">
+                        <div class="title">MAGIC SLIDER</div>
+                        <div class="type">FLOWER</div>
+                        <div class="description">
+                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti temporibus quis eum consequuntur voluptate quae doloribus distinctio. Possimus, sed recusandae. Lorem ipsum dolor sit amet consectetur adipisicing elit. Sequi, aut.
+                        </div>
+                        <div class="button">
+                            <button>SEE MORE</button>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="item">
+                    <img src="./imgs/bike9.jpg" alt="">xx
+    
+                    <div class="content">
+                        <div class="title">MAGIC SLIDER</div>
+                        <div class="type">NATURE</div>
+                        <div class="description">
+                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti temporibus quis eum consequuntur voluptate quae doloribus distinctio. Possimus, sed recusandae. Lorem ipsum dolor sit amet consectetur adipisicing elit. Sequi, aut.
+                        </div>
+                        <div class="button">
+                            <button>SEE MORE</button>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="item">
+                    <img src="./imgs/bike10.jpg" alt="">
+    
+                    <div class="content">
+                        <div class="title">MAGIC SLIDER</div>
+                        <div class="type">PLANT</div>
+                        <div class="description">
+                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti temporibus quis eum consequuntur voluptate quae doloribus distinctio. Possimus, sed recusandae. Lorem ipsum dolor sit amet consectetur adipisicing elit. Sequi, aut.
+                        </div>
+                        <div class="button">
+                            <button>SEE MORE</button>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="item">
+                    <img src="./imgs/bike11.jpg" alt="">
+    
+                    <div class="content">
+                        <div class="title">BMX</div>
+                        <div class="type">Freestyle</div>
+                        <div class="description">
+                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Quam provident dolores at perferendis! Labore, pariatur saepe consequatur cupiditate eligendi dolorem laboriosam quam cum excepturi quidem iste quae necessitatibus, modi veritatis!
+                        </div>
+                        <div class="button">
+                            <button>SEE MORE</button>
+                        </div>
+                    </div>
+                </div>
+    
+            </div>
+    
+    
+            <div class="thumbnail">
+    
+                <div class="item">
+                    <img src="./imgs/bike.jpg" alt="">
+                </div>
+                <div class="item">
+                    <img src="./imgs/bike9.jpg" alt="">
+                </div>
+                <div class="item">
+                    <img src="./imgs/bike10.jpg" alt="">
+                </div>
+                <div class="item">
+                    <img src="./imgs/bike11.jpg" alt="">
+                </div>
+    
+            </div>
+    
+    
+            <div class="nextPrevArrows">
+                <button class="prev"> < </button>
+                <button class="next"> > </button>
+            </div>
+    
+    
+        </div>
+    
+        <script>
+            // Função para exibir o painel do carrinho
+            function exibirCarrinho() {
+                mostrarCarrinho();
+            }
+    
+            // Função para mostrar o carrinho
+            function mostrarCarrinho() {
+                const carrinhoPanel = document.getElementById('carrinho-panel');
+                const carrinhoContent = document.getElementById('carrinho-content');
+                carrinhoContent.innerHTML = ''; // Limpa o conteúdo atual
+    
+                const carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+                let total = 0;
+    
+                carrinho.forEach((item, index) => {
+                    const itemDiv = document.createElement('div');
+                    itemDiv.className = 'item';
+    
+                    const itemImage = document.createElement('img');
+                    itemImage.src = item.imagem;
+                    itemImage.alt = item.nome;
+                    
+                    const itemDetails = document.createElement('div');
+                    itemDetails.innerHTML = `
+                        Produto: ${item.nome} <br> 
+                        Preço Unitário: R$ ${item.preco.toFixed(2)} <br>
+                        Quantidade: <input type="number" value="${item.quantidade}" class="quantity-input" onchange="atualizarQuantidade(${index}, this.value)">
+                    `;
+                    
+                    itemDiv.appendChild(itemImage);
+                    itemDiv.appendChild(itemDetails);
+                    carrinhoContent.appendChild(itemDiv);
+    
+                    total += item.preco * item.quantidade;
+                });
+    
+                const totalDiv = document.createElement('div');
+                totalDiv.innerHTML = `<h2>Total: R$ ${total.toFixed(2)}</h2>`;
+                carrinhoContent.appendChild(totalDiv);
+    
+                carrinhoPanel.style.width = '300px'; // Exibe o painel
+            }
+    
+            // Função para fechar o painel do carrinho
+            function fecharCarrinho() {
+                document.getElementById('carrinho-panel').style.width = '0';
+            }
+    
+            // Função para atualizar a quantidade do item
+            function atualizarQuantidade(index, quantidade) {
+                const carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+                if (quantidade <= 0) {
+                    carrinho.splice(index, 1); // Remove o item se a quantidade for 0 ou menor
+                } else {
+                    carrinho[index].quantidade = parseInt(quantidade);
+                }
+                localStorage.setItem('carrinho', JSON.stringify(carrinho));
+                mostrarCarrinho(); // Atualiza o carrinho exibido
+            }
+        </script>
+    
+        <script>
+
+            
+            // Inicialização do carrinho
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            updateCartCount();
+    
+            function toggleCart() {
+                const cartPanel = document.getElementById('cart-panel');
+                cartPanel.style.display = (cartPanel.style.display === 'none' || cartPanel.style.display === '') ? 'block' : 'none';
+                displayCartItems();
+            }
+    
+            function updateCartCount() {
+                const cartCount = document.getElementById('cart-count');
+                cartCount.textContent = cart.reduce((total, item) => total + item.quantity, 0);
+            }
+    
+            function displayCartItems() {
+                const cartContent = document.getElementById('cart-content');
+                cartContent.innerHTML = '';
+    
+                cart.forEach((item, index) => {
+                    const itemDiv = document.createElement('div');
+                    itemDiv.className = 'item';
+                    itemDiv.innerHTML = `
+                        <img src="${item.image}" alt="${item.name}" style="width: 100px;">
+                        <div>
+                            <h3>${item.name}</h3>
+                            <p>Preço: R$ ${item.price.toFixed(2)}</p>
+                            <div class="quantity-controls">
+                                <button onclick="changeQuantity(${index}, -1)">-</button>
+                                <span class="quantity">${item.quantity}</span>
+                                <button onclick="changeQuantity(${index}, 1)">+</button>
+                            </div>
+                        </div>
+                    `;
+                    cartContent.appendChild(itemDiv);
+                });
+            }
+    
+            function changeQuantity(index, change) {
+                const item = cart[index];
+                item.quantity = Math.max(1, item.quantity + change);
+                localStorage.setItem('cart', JSON.stringify(cart));
+                updateCartCount();
+                displayCartItems();
+            }
+            
+        </script>
+    
+    
+    
+        <script src="app.js"></script>
+        
+        
+        <section id="produtos" class="produtos">
+            <h2>Quadros</h2>
+            <div class="produtos-grid">
+                <div class="produto">
+                    <img src="imgs/GIOS 4RTIX.jpg" alt="PERIFA 1.0 LILAS E PRETO">
+                    <h3>QUADRRO GIOS 4TRIX</h3>
+                    <p>QUADRO GIOS 4TRIX LIMITED EDITION, QUADRO NAS CORES PRETO COM ADESIVOS ROSA E AZUL</p>
+                   <button onclick="location.href='Gios1.html'" id="add-to-cart-4">Ir para o produto</button>
+
+                </div>
+                <div class="produto">
+                    <img src="imgs/QUADRO GIOS EVO.jpg" alt="Bicicleta 2">
+                    <h3>QUADRO FRX EVO</h3>
+                    <p>QUADRO FRX EVO COLMEIA, QUADRO NA COR BRANCA COM ADESIVOS VERMELHOS E</p>
+                    <button onclick="location.href='Gios2.html'" id="add-to-cart-2">Ir para o produto</button>
+                </div>
+                <div class="produto">
+                    <img src="imgs/gios dj branco.jpg" alt="Bicicleta 3">
+                    <h3>GIOS 4TRIX </h3>
+                    <p>GIOS 4TRIX PRETO COM LARANJA, ESTE QUADRO FOI FEITO ESPECIALMENTE PARA STREET URBANO</p>
+                    <button onclick="location.href='Gios3.html'" id="add-to-cart-3">Ir para o produto</button>
+                </div>
+                <div class="produto">
+                    <img src="imgs/gios dj.jpg" alt="Bicicleta 4">
+                    <h3> GIOS DJ </h3>
+                    <p>GIOS DJ, ROSA COM ADESIVO PRETO </p>
+                    <button onclick="location.href='Gios4.html'" id="add-to-cart-4">Ir para o produto</button>
+
+                </div>
+            </div>
+        </section>
+        <section id="sobre-nos" class="sobre-nos">
+            <div class="container">
+                <h2>Sobre Nós</h2>
+                <p>Somos uma loja apaixonada por bicicletas, comprometida em oferecer produtos de alta qualidade e atendimento excepcional aos nossos clientes.</p>
+                <p>Estamos no mercado desde 2024.</p>
+               
+            </div>
+        </section>
+    </main>
+    <div id="carrinho-panel" class="carrinho-panel">
+        <div class="carrinho-header">
+            <h2>Seu Carrinho</h2>
+            <button onclick="fecharCarrinho()" class="fechar">X</button>
+            
+        </div>
+        
+        <div id="carrinho-content" class="carrinho-content">
+            <!-- Conteúdo do carrinho será inserido aqui pelo JavaScript -->
+            <button onclick="finalizarCompra()" class="finalizar-compra">Finalizar Compra</button>
+        </div>
+        
+
+    
+        
+      
+    </div>
+</body>
+</html>
